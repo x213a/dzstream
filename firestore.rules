@@ -1,0 +1,40 @@
+rules_version = '2';
+
+// Règles de sécurité DzStream.
+// Déploiement : `firebase deploy --only firestore:rules` (ou copier-coller dans la console).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // Le rôle est lu côté serveur : un client ne peut pas s'auto-proclamer admin.
+    function isAdmin() {
+      return signedIn()
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Catalogue : lecture publique (mode invité), écriture réservée aux admins.
+    match /channels/{channelId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Profils : chacun ne lit/écrit que le sien, sans jamais pouvoir modifier son rôle.
+    // Promotion admin : modifier `role` à la main depuis la console Firebase.
+    match /users/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow create: if signedIn() && request.auth.uid == uid
+        && request.resource.data.role == 'user';
+      allow update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.role == resource.data.role;
+      allow delete: if false;
+    }
+  }
+}
