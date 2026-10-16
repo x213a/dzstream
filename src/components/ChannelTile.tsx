@@ -6,7 +6,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { useLocalized } from '@/i18n';
 import { useCatalog } from '@/providers/CatalogProvider';
-import { channelTint, colors, radius, spacing } from '@/theme';
+import { channelTint, makeStyles, radius, spacing, useTheme } from '@/theme';
 import type { Channel } from '@/types';
 
 import { AppText } from './AppText';
@@ -26,7 +26,9 @@ export function ChannelTile({ channel, width = TILE_WIDTH, onRemoveFavorite }: C
   const { t } = useTranslation();
   const { channelName, text } = useLocalized();
   const { getCategory } = useCatalog();
-  const tint = channelTint(channel.id);
+  const { mode, colors } = useTheme();
+  const styles = useStyles();
+  const tint = channelTint(channel.id, mode);
   const name = channelName(channel);
   const logoSize = Math.round(width * (onRemoveFavorite ? 0.46 : 0.52));
 
@@ -62,7 +64,7 @@ export function ChannelTile({ channel, width = TILE_WIDTH, onRemoveFavorite }: C
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   card: {
     padding: spacing.md,
     paddingTop: spacing.lg,
@@ -74,4 +76,4 @@ const styles = StyleSheet.create({
   },
   logo: { alignItems: 'center', marginBottom: spacing.md },
   heart: { position: 'absolute', top: spacing.sm, end: spacing.sm },
-});
+}));

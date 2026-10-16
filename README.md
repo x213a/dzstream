@@ -1,4 +1,4 @@
-# DzStream
+# Mawave
 
 Application mobile de streaming des chaînes TV et radios algériennes : thème sombre
 inspiré de Molotov, accès invité, comptes optionnels, panneau d'administration.

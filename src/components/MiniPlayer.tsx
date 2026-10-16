@@ -1,11 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Pressable, View } from 'react-native';
 
 import { useLocalized } from '@/i18n';
 import { usePlayer } from '@/providers/PlayerProvider';
-import { colors, radius, spacing } from '@/theme';
+import { makeStyles, mediaColors, radius, spacing, useColors } from '@/theme';
 
 import { AppText } from './AppText';
 import { Equalizer } from './Equalizer';
@@ -22,6 +22,8 @@ export function MiniPlayer() {
   const { t } = useTranslation();
   const { channelName } = useLocalized();
   const { current, status, togglePause, stop, fullscreen, reportVideoStatus } = usePlayer();
+  const colors = useColors();
+  const styles = useStyles();
 
   if (!current) return null;
   const isTv = current.type === 'tv';
@@ -74,7 +76,7 @@ export function MiniPlayer() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -85,12 +87,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceRaised,
     borderWidth: 1,
     borderColor: 'rgba(31,203,92,0.35)',
-    boxShadow: '0 6px 20px rgba(0,0,0,0.45)',
+    boxShadow: `0 6px 20px ${colors.shadow}`,
     gap: spacing.sm,
   },
   main: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: spacing.md },
-  thumbTv: { width: THUMB_WIDTH, height: (THUMB_WIDTH * 9) / 16, borderRadius: radius.sm, overflow: 'hidden', backgroundColor: '#000' },
+  thumbTv: { width: THUMB_WIDTH, height: (THUMB_WIDTH * 9) / 16, borderRadius: radius.sm, overflow: 'hidden', backgroundColor: mediaColors.background },
   texts: { flex: 1 },
   control: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
   playControl: { borderRadius: 20, backgroundColor: colors.accent, boxShadow: '0 0 12px rgba(31,203,92,0.45)' },
-});
+}));

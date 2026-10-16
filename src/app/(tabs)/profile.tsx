@@ -15,7 +15,7 @@ import { ListGroup, ListItem } from '@/components/ListItem';
 import { ScreenBackground } from '@/components/Screen';
 import { LANGUAGES, setLanguage, useLocalized } from '@/i18n';
 import { useAuth } from '@/providers/AuthProvider';
-import { colors, fonts, radius, spacing } from '@/theme';
+import { fonts, makeStyles, radius, spacing, useTheme, type ThemeMode } from '@/theme';
 import type { Language } from '@/types';
 import { Alert } from '@/utils/alert';
 
@@ -28,12 +28,19 @@ async function restartApp() {
   }
 }
 
+const THEMES: { mode: ThemeMode; label: 'profile.themeDark' | 'profile.themeLight'; icon: keyof typeof Ionicons.glyphMap }[] = [
+  { mode: 'dark', label: 'profile.themeDark', icon: 'moon-outline' },
+  { mode: 'light', label: 'profile.themeLight', icon: 'sunny-outline' },
+];
+
 export default function ProfileScreen() {
   const { t } = useTranslation();
   const { lang } = useLocalized();
   const insets = useSafeAreaInsets();
   const { available, isGuest, isAdmin, user, profile, signOut, clearHistory } = useAuth();
   const [busy, setBusy] = useState(false);
+  const { mode, setMode, colors } = useTheme();
+  const styles = useStyles();
 
   const changeLanguage = async (code: Language) => {
     if (code === lang) return;
@@ -126,6 +133,18 @@ export default function ProfileScreen() {
           ))}
         </ListGroup>
 
+        <ListGroup title={t('profile.appearance')}>
+          {THEMES.map((th) => (
+            <ListItem
+              key={th.mode}
+              icon={th.icon}
+              label={t(th.label)}
+              onPress={() => setMode(th.mode)}
+              right={th.mode === mode ? <Ionicons name="checkmark-circle" size={20} color={colors.accent} /> : <View />}
+            />
+          ))}
+        </ListGroup>
+
         {!isGuest && (
           <ListGroup>
             <ListItem icon="log-out-outline" label={t('profile.signOut')} color={colors.danger} onPress={busy ? undefined : doSignOut} />
@@ -147,7 +166,7 @@ export default function ProfileScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   header: { flexDirection: 'row', alignItems: 'center', gap: spacing.lg, marginHorizontal: spacing.lg, marginBottom: spacing.xl },
   avatar: { borderWidth: 2, borderColor: 'rgba(255,255,255,0.85)', boxShadow: '0 0 18px rgba(31,203,92,0.35)' },
   nameRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
@@ -160,4 +179,4 @@ const styles = StyleSheet.create({
   footerScriptSmall: { fontFamily: fonts.script, fontSize: 20, lineHeight: 24, color: colors.text },
   footerArabic: { fontFamily: fonts.arabic.bold, fontSize: 26, lineHeight: 38, color: colors.text },
   footerArabicSmall: { fontFamily: fonts.arabic.semibold, fontSize: 16, lineHeight: 26, color: colors.text },
-});
+}));

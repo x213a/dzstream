@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { Animated, Easing, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
-import { colors } from '@/theme';
+import { useColors } from '@/theme';
 
 interface EqualizerProps {
   bars?: number;
@@ -12,7 +12,9 @@ interface EqualizerProps {
 }
 
 /** Barres d'égaliseur animées (décoratives), plus hautes au centre, figées en pause. */
-export function Equalizer({ bars = 32, height, active, color = colors.accent, style }: EqualizerProps) {
+export function Equalizer({ bars = 32, height, active, color: colorProp, style }: EqualizerProps) {
+  const colors = useColors();
+  const color = colorProp ?? colors.accent;
   const values = useMemo(() => Array.from({ length: bars }, () => new Animated.Value(0.3)), [bars]);
   // Enveloppe en cloche : le centre bouge plus que les bords.
   const envelope = useMemo(

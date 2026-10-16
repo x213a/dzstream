@@ -12,7 +12,7 @@ import { LiveVideo } from '@/components/LiveVideo';
 import { useLocalized } from '@/i18n';
 import { useCatalog } from '@/providers/CatalogProvider';
 import { usePlayer } from '@/providers/PlayerProvider';
-import { colors, spacing } from '@/theme';
+import { mediaColors, spacing } from '@/theme';
 
 /** Lecteur TV plein écran (HLS via react-native-video). */
 export default function PlayerScreen() {
@@ -52,13 +52,13 @@ export default function PlayerScreen() {
 
       {status === 'loading' && (
         <View style={styles.center} pointerEvents="none">
-          <ActivityIndicator size="large" color={colors.text} />
+          <ActivityIndicator size="large" color={mediaColors.text} />
         </View>
       )}
 
       {(status === 'error' || !channel) && (
         <View style={[styles.center, styles.errorBox]}>
-          <AppText variant="heading" center>
+          <AppText variant="heading" center color={mediaColors.text}>
             {channel ? t('player.error') : t('channel.notFound')}
           </AppText>
           {channel && <Button label={t('common.retry')} variant="secondary" icon="refresh" onPress={retry} />}
@@ -67,12 +67,12 @@ export default function PlayerScreen() {
 
       <View style={[styles.topBar, { paddingTop: insets.top + spacing.sm, paddingStart: insets.left + spacing.lg, paddingEnd: insets.right + spacing.lg }]}>
         <Pressable onPress={close} hitSlop={12} accessibilityRole="button" accessibilityLabel={t('common.close')}>
-          <Ionicons name="chevron-down" size={28} color={colors.text} />
+          <Ionicons name="chevron-down" size={28} color={mediaColors.text} />
         </Pressable>
         {channel && (
           <View style={styles.titleBox}>
             <LiveBadge />
-            <AppText variant="heading" numberOfLines={1} style={{ flexShrink: 1 }}>
+            <AppText variant="heading" numberOfLines={1} color={mediaColors.text} style={{ flexShrink: 1 }}>
               {channelName(channel)}
             </AppText>
           </View>
@@ -83,9 +83,10 @@ export default function PlayerScreen() {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#000' },
+  // Lecteur plein écran : toujours sur fond noir, quel que soit le thème.
+  screen: { flex: 1, backgroundColor: mediaColors.background },
   center: { position: 'absolute', top: 0, bottom: 0, start: 0, end: 0, alignItems: 'center', justifyContent: 'center' },
-  errorBox: { gap: spacing.lg, padding: spacing.xl, backgroundColor: colors.overlay },
+  errorBox: { gap: spacing.lg, padding: spacing.xl, backgroundColor: 'rgba(0,0,0,0.6)' },
   topBar: { position: 'absolute', top: 0, start: 0, end: 0, flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   titleBox: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
 });

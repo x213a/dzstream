@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable } from 'react-native';
 
-import { colors, radius, spacing } from '@/theme';
+import { makeStyles, radius, spacing, useColors } from '@/theme';
 
 import { AppText } from './AppText';
 
@@ -15,6 +15,8 @@ interface ActionTileProps {
 
 /** Bouton carré icône + libellé (Favoris, Partager, Plein écran…). */
 export function ActionTile({ icon, label, onPress, active, disabled }: ActionTileProps) {
+  const colors = useColors();
+  const styles = useStyles();
   return (
     <Pressable
       onPress={onPress}
@@ -31,7 +33,7 @@ export function ActionTile({ icon, label, onPress, active, disabled }: ActionTil
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   tile: {
     flex: 1,
     alignItems: 'center',
@@ -43,4 +45,4 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.borderStrong,
   },
-});
+}));

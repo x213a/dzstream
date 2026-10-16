@@ -1,8 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { ReactNode } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
-import { colors, spacing } from '@/theme';
+import { makeStyles, spacing, useColors } from '@/theme';
 
 import { AppText } from './AppText';
 
@@ -14,6 +14,8 @@ interface EmptyStateProps {
 }
 
 export function EmptyState({ icon, title, body, children }: EmptyStateProps) {
+  const colors = useColors();
+  const styles = useStyles();
   return (
     <View style={styles.container}>
       <View style={styles.iconCircle}>
@@ -32,7 +34,7 @@ export function EmptyState({ icon, title, body, children }: EmptyStateProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   container: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacing.xxl, gap: spacing.md },
   iconCircle: {
     width: 72,
@@ -44,4 +46,4 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   actions: { alignSelf: 'stretch', gap: spacing.sm, marginTop: spacing.lg },
-});
+}));

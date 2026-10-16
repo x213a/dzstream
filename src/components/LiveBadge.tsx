@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
-import { colors, radius, spacing } from '@/theme';
+import { makeStyles, radius, spacing, useColors } from '@/theme';
 
 import { AppText } from './AppText';
 
@@ -15,12 +15,14 @@ type Variant = 'solid' | 'pill' | 'inline';
  */
 export function LiveBadge({ variant = 'solid' }: { variant?: Variant }) {
   const { t } = useTranslation();
+  const colors = useColors();
+  const styles = useStyles();
 
   if (variant === 'solid') {
     return (
       <View style={[styles.row, styles.solid]}>
-        <View style={[styles.dot, { backgroundColor: colors.text }]} />
-        <AppText variant="caption">{t('common.live').toUpperCase()}</AppText>
+        <View style={[styles.dot, { backgroundColor: colors.onAccent }]} />
+        <AppText variant="caption" color={colors.onAccent}>{t('common.live').toUpperCase()}</AppText>
       </View>
     );
   }
@@ -35,7 +37,7 @@ export function LiveBadge({ variant = 'solid' }: { variant?: Variant }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   row: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs + 2, alignSelf: 'flex-start' },
   solid: { backgroundColor: colors.live, borderRadius: radius.sm, paddingHorizontal: spacing.sm, paddingVertical: 2 },
   pill: {
@@ -48,4 +50,4 @@ const styles = StyleSheet.create({
   },
   dot: { width: 6, height: 6, borderRadius: 3 },
   liveDot: { backgroundColor: colors.live, boxShadow: `0 0 6px ${colors.live}` },
-});
+}));

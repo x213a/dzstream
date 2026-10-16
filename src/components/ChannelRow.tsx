@@ -7,7 +7,7 @@ import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 import { useLocalized } from '@/i18n';
 import { useCatalog } from '@/providers/CatalogProvider';
 import { usePlayer } from '@/providers/PlayerProvider';
-import { channelTint, colors, radius, spacing } from '@/theme';
+import { channelTint, makeStyles, radius, spacing, useTheme } from '@/theme';
 import type { Channel } from '@/types';
 
 import { AppText } from './AppText';
@@ -20,7 +20,9 @@ export function ChannelRow({ channel }: { channel: Channel }) {
   const { channelName, text } = useLocalized();
   const { getCategory } = useCatalog();
   const { play, current, status, togglePause } = usePlayer();
-  const tint = channelTint(channel.id);
+  const { mode, colors } = useTheme();
+  const styles = useStyles();
+  const tint = channelTint(channel.id, mode);
   const isCurrent = current?.id === channel.id && status !== 'idle';
   const isPlaying = isCurrent && status === 'playing';
 
@@ -74,7 +76,7 @@ export function ChannelRow({ channel }: { channel: Channel }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -100,4 +102,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     boxShadow: '0 0 12px rgba(31,203,92,0.35)',
   },
-});
+}));

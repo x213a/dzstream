@@ -70,7 +70,7 @@ export async function playRadio(channel: Channel, subtitle: string) {
   p.play();
   p.setActiveForLockScreen(
     true,
-    { title: channel.name, artist: subtitle, albumTitle: 'DzStream', artworkUrl: channel.logoUrl },
+    { title: channel.name, artist: subtitle, albumTitle: 'Mawave', artworkUrl: channel.logoUrl },
     { isLiveStream: true, showSeekBackward: false, showSeekForward: false },
   );
 }

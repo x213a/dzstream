@@ -1,12 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, StyleSheet, TextInput, View } from 'react-native';
+import { FlatList, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useLocalized } from '@/i18n';
 import { useCatalog } from '@/providers/CatalogProvider';
-import { colors, fonts, radius, spacing } from '@/theme';
+import { fonts, makeStyles, radius, spacing, useTheme } from '@/theme';
 import type { MediaType } from '@/types';
 import { matchesQuery } from '@/utils/search';
 
@@ -24,6 +24,8 @@ export function ChannelListScreen({ type }: { type: MediaType }) {
   const [categoryId, setCategoryId] = useState('all');
   const [searching, setSearching] = useState(false);
   const [query, setQuery] = useState('');
+  const { mode, colors } = useTheme();
+  const styles = useStyles();
 
   const ofType = useMemo(() => channels.filter((c) => c.type === type), [channels, type]);
   // Seules les catégories qui contiennent au moins une chaîne de ce type.
@@ -60,6 +62,7 @@ export function ChannelListScreen({ type }: { type: MediaType }) {
             placeholder={t('home.searchPlaceholder')}
             placeholderTextColor={colors.textMuted}
             selectionColor={colors.accent}
+            keyboardAppearance={mode}
             style={[styles.searchInput, { fontFamily: lang === 'ar' ? fonts.arabic.regular : fonts.latin.regular }]}
             returnKeyType="search"
           />
@@ -88,7 +91,7 @@ export function ChannelListScreen({ type }: { type: MediaType }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   search: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -103,4 +106,4 @@ const styles = StyleSheet.create({
   },
   searchInput: { flex: 1, minHeight: 44, color: colors.text, fontSize: 15 },
   filters: { paddingBottom: spacing.md },
-});
+}));

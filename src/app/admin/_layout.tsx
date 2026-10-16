@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, View } from 'react-native';
 
 import { useAuth } from '@/providers/AuthProvider';
-import { colors } from '@/theme';
+import { useColors } from '@/theme';
 
 /**
  * Garde d'accès du panneau d'administration.
@@ -13,6 +13,7 @@ import { colors } from '@/theme';
 export default function AdminLayout() {
   const { t } = useTranslation();
   const { initializing, user, profile, isAdmin } = useAuth();
+  const colors = useColors();
 
   // On attend le profil Firestore avant de décider (le rôle y est stocké).
   if (initializing || (user && !profile)) {

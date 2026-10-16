@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { useLocalized } from '@/i18n';
-import { colors, spacing } from '@/theme';
+import { makeStyles, spacing, useColors } from '@/theme';
 
 import { AppText } from './AppText';
 
@@ -17,8 +17,11 @@ interface ListItemProps {
 }
 
 /** Ligne de réglage (profil, administration). */
-export function ListItem({ icon, label, value, onPress, right, color = colors.text }: ListItemProps) {
+export function ListItem({ icon, label, value, onPress, right, color: colorProp }: ListItemProps) {
   const { isRTL } = useLocalized();
+  const colors = useColors();
+  const styles = useStyles();
+  const color = colorProp ?? colors.text;
   return (
     <Pressable
       onPress={onPress}
@@ -46,6 +49,8 @@ export function ListItem({ icon, label, value, onPress, right, color = colors.te
 }
 
 export function ListGroup({ children, title }: { children: ReactNode; title?: string }) {
+  const colors = useColors();
+  const styles = useStyles();
   return (
     <View style={styles.groupWrapper}>
       {title && (
@@ -58,7 +63,7 @@ export function ListGroup({ children, title }: { children: ReactNode; title?: st
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -71,4 +76,4 @@ const styles = StyleSheet.create({
   groupWrapper: { marginHorizontal: spacing.lg, marginBottom: spacing.xl },
   groupTitle: { marginBottom: spacing.sm, marginStart: spacing.xs },
   group: { borderRadius: 14, overflow: 'hidden', gap: StyleSheet.hairlineWidth, backgroundColor: colors.border },
-});
+}));

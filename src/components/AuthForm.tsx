@@ -1,10 +1,10 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 
 import { authErrorKey, useAuth } from '@/providers/AuthProvider';
-import { colors, spacing } from '@/theme';
+import { makeStyles, spacing, useColors } from '@/theme';
 
 import { AppText } from './AppText';
 import { Button } from './Button';
@@ -21,6 +21,8 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const isRegister = mode === 'register';
+  const colors = useColors();
+  const styles = useStyles();
 
   const submit = async () => {
     setError(null);
@@ -90,8 +92,8 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   flex: { flex: 1, backgroundColor: colors.background },
   content: { padding: spacing.lg, gap: spacing.lg },
   submit: { marginTop: spacing.sm },
-});
+}));

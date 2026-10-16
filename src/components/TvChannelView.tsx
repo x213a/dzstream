@@ -2,14 +2,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { router, useIsFocused } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useChannelActions } from '@/hooks/useChannelActions';
 import { useLocalized } from '@/i18n';
 import { useCatalog } from '@/providers/CatalogProvider';
 import { usePlayer } from '@/providers/PlayerProvider';
-import { colors, radius, spacing } from '@/theme';
+import { makeStyles, mediaColors, radius, spacing, useColors } from '@/theme';
 import type { Channel } from '@/types';
 
 import { ActionTile } from './ActionTile';
@@ -31,6 +31,8 @@ export function TvChannelView({ channel }: { channel: Channel }) {
   const { favorite, favBusy, onFavorite, onShare } = useChannelActions(channel);
   const focused = useIsFocused();
   const [attempt, setAttempt] = useState(0);
+  const colors = useColors();
+  const styles = useStyles();
 
   const isCurrent = current?.id === channel.id;
   const others = useMemo(() => channels.filter((c) => c.type === 'tv' && c.id !== channel.id), [channels, channel.id]);
@@ -77,12 +79,12 @@ export function TvChannelView({ channel }: { channel: Channel }) {
           {focused && isCurrent && <LiveVideo key={attempt} channel={channel} paused={status === 'paused'} onStatus={reportVideoStatus} />}
           {isCurrent && status === 'loading' && (
             <View style={styles.overlay} pointerEvents="none">
-              <ActivityIndicator size="large" color={colors.text} />
+              <ActivityIndicator size="large" color={mediaColors.text} />
             </View>
           )}
           {isCurrent && status === 'error' && (
             <View style={[styles.overlay, styles.error]}>
-              <AppText variant="heading" center>
+              <AppText variant="heading" center color={mediaColors.text}>
                 {t('player.error')}
               </AppText>
               <Button label={t('common.retry')} variant="secondary" icon="refresh" onPress={retry} />
@@ -139,14 +141,14 @@ export function TvChannelView({ channel }: { channel: Channel }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   topBar: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, paddingHorizontal: spacing.sm, marginBottom: spacing.md },
   video: {
     aspectRatio: 16 / 9,
     marginHorizontal: spacing.lg,
     borderRadius: radius.lg,
     overflow: 'hidden',
-    backgroundColor: '#000',
+    backgroundColor: mediaColors.background,
     borderWidth: 1,
     borderColor: colors.borderStrong,
   },
@@ -157,4 +159,4 @@ const styles = StyleSheet.create({
   info: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.md, marginHorizontal: spacing.lg, marginTop: spacing.lg },
   description: { marginHorizontal: spacing.lg, marginTop: spacing.sm },
   actions: { flexDirection: 'row', gap: spacing.md, margin: spacing.lg, marginBottom: spacing.xl },
-});
+}));

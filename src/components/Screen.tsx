@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 import { Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import { useLocalized } from '@/i18n';
-import { colors, radius, spacing } from '@/theme';
+import { makeStyles, radius, spacing, useColors } from '@/theme';
 
 import { AppText } from './AppText';
 
@@ -12,6 +12,8 @@ type IconName = keyof typeof Ionicons.glyphMap;
 
 /** Fond commun des écrans : lueur verte en haut, qui se fond dans le bleu nuit. */
 export function ScreenBackground({ children, style }: { children?: ReactNode; style?: StyleProp<ViewStyle> }) {
+  const colors = useColors();
+  const styles = useStyles();
   return (
     <View style={[styles.screen, style]}>
       <LinearGradient
@@ -34,6 +36,8 @@ interface ScreenHeaderProps {
 
 /** En-tête d'onglet : grande icône, titre, sous-titre et actions à droite. */
 export function ScreenHeader({ icon, title, subtitle, actions }: ScreenHeaderProps) {
+  const colors = useColors();
+  const styles = useStyles();
   return (
     <View style={styles.header}>
       <Ionicons name={icon} size={34} color={colors.text} />
@@ -64,6 +68,8 @@ interface IconButtonProps {
 }
 
 export function IconButton({ icon, label, onPress, active, size = 22, color }: IconButtonProps) {
+  const colors = useColors();
+  const styles = useStyles();
   return (
     <Pressable
       onPress={onPress}
@@ -80,6 +86,8 @@ export function IconButton({ icon, label, onPress, active, size = 22, color }: I
 /** Titre de section avec lien « Voir tout ›». */
 export function SectionHeader({ title, onSeeAll, seeAllLabel }: { title: string; onSeeAll?: () => void; seeAllLabel?: string }) {
   const { isRTL } = useLocalized();
+  const colors = useColors();
+  const styles = useStyles();
   return (
     <View style={styles.section}>
       <AppText variant="title" style={{ flex: 1 }} numberOfLines={1}>
@@ -97,7 +105,7 @@ export function SectionHeader({ title, onSeeAll, seeAllLabel }: { title: string;
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   screen: { flex: 1, backgroundColor: colors.background },
   header: {
     flexDirection: 'row',
@@ -109,4 +117,4 @@ const styles = StyleSheet.create({
   iconButton: { width: 40, height: 40, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
   section: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.lg, marginBottom: spacing.md },
   seeAll: { flexDirection: 'row', alignItems: 'center', gap: 2 },
-});
+}));

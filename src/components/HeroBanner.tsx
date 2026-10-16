@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 
 import { useLocalized } from '@/i18n';
-import { colors, fonts, radius, spacing } from '@/theme';
+import { fonts, makeStyles, mediaColors, radius, spacing } from '@/theme';
 
 import { AlgeriaFlag } from './AlgeriaFlag';
 import { AlgiersSkyline } from './AlgiersSkyline';
@@ -13,6 +13,7 @@ import { AppText } from './AppText';
 export function HeroBanner() {
   const { t } = useTranslation();
   const { lang } = useLocalized();
+  const styles = useStyles();
   // La police manuscrite n'a pas de glyphes arabes.
   const scriptStyle = lang === 'ar' ? { fontFamily: fonts.arabic.bold, fontSize: 22, lineHeight: 34 } : styles.script;
 
@@ -33,14 +34,14 @@ export function HeroBanner() {
         end={{ x: 0.7, y: 0.5 }}
         style={StyleSheet.absoluteFill}
       />
-      <AppText style={[scriptStyle, styles.text]} accessibilityRole="header">
+      <AppText style={[scriptStyle, styles.text]} color={mediaColors.text} accessibilityRole="header">
         {t('home.slogan')}
       </AppText>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   banner: {
     height: 150,
     marginHorizontal: spacing.lg,
@@ -54,5 +55,5 @@ const styles = StyleSheet.create({
   skyline: { position: 'absolute', end: 0, bottom: 0, width: '78%', height: '100%' },
   flag: { position: 'absolute', end: '38%', top: '42%', transform: [{ skewY: '-6deg' }] },
   text: { paddingHorizontal: spacing.xl, maxWidth: '62%', transform: [{ rotate: '-4deg' }] },
-  script: { fontFamily: fonts.script, fontSize: 30, lineHeight: 32, color: colors.text, textShadowColor: 'rgba(0,0,0,0.6)', textShadowRadius: 8 },
-});
+  script: { fontFamily: fonts.script, fontSize: 30, lineHeight: 32, textShadowColor: 'rgba(0,0,0,0.6)', textShadowRadius: 8 },
+}));

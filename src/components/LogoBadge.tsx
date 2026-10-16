@@ -2,7 +2,7 @@ import { Image } from 'expo-image';
 import { useState } from 'react';
 import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
-import { channelTint, colors, fonts } from '@/theme';
+import { channelTint, fonts, useTheme } from '@/theme';
 import type { Channel } from '@/types';
 
 import { AppText } from './AppText';
@@ -18,7 +18,8 @@ interface LogoBadgeProps {
 /** Logo rond sur pastille claire, cerclé d'un anneau à la couleur de la chaîne. */
 export function LogoBadge({ channel, size, glow, style }: LogoBadgeProps) {
   const [failed, setFailed] = useState(false);
-  const tint = channelTint(channel.id);
+  const { mode } = useTheme();
+  const tint = channelTint(channel.id, mode);
   const ring = Math.max(2, Math.round(size * 0.05));
   const initials = channel.name
     .split(/\s+/)
@@ -53,7 +54,7 @@ export function LogoBadge({ channel, size, glow, style }: LogoBadgeProps) {
             accessibilityIgnoresInvertColors
           />
         ) : (
-          <AppText style={{ fontFamily: fonts.latin.bold, fontSize: size * 0.3, lineHeight: size * 0.4, color: colors.background }}>
+          <AppText style={{ fontFamily: fonts.latin.bold, fontSize: size * 0.3, lineHeight: size * 0.4, color: INITIALS_COLOR }}>
             {initials}
           </AppText>
         )}
@@ -61,6 +62,9 @@ export function LogoBadge({ channel, size, glow, style }: LogoBadgeProps) {
     </View>
   );
 }
+
+/** Initiales sombres sur la pastille claire, dans les deux thèmes. */
+const INITIALS_COLOR = '#060C11';
 
 const styles = StyleSheet.create({
   ring: { padding: 2, backgroundColor: 'rgba(255,255,255,0.08)' },

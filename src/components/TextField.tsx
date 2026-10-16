@@ -1,7 +1,7 @@
 import { StyleSheet, TextInput, View, type TextInputProps } from 'react-native';
 
 import { useLocalized } from '@/i18n';
-import { colors, fonts, radius, spacing } from '@/theme';
+import { fonts, makeStyles, radius, spacing, useTheme } from '@/theme';
 
 import { AppText } from './AppText';
 
@@ -15,6 +15,8 @@ interface TextFieldProps extends TextInputProps {
 
 export function TextField({ label, hint, error, ltr, style, ...rest }: TextFieldProps) {
   const { lang, isRTL } = useLocalized();
+  const { mode, colors } = useTheme();
+  const styles = useStyles();
   return (
     <View style={styles.wrapper}>
       <AppText variant="label" color={colors.textSecondary}>
@@ -23,6 +25,7 @@ export function TextField({ label, hint, error, ltr, style, ...rest }: TextField
       <TextInput
         placeholderTextColor={colors.textMuted}
         selectionColor={colors.accent}
+        keyboardAppearance={mode}
         {...rest}
         style={[
           styles.input,
@@ -46,7 +49,7 @@ export function TextField({ label, hint, error, ltr, style, ...rest }: TextField
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   wrapper: { gap: spacing.xs },
   input: {
     minHeight: 48,
@@ -60,4 +63,4 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   inputError: { borderColor: colors.danger },
-});
+}));

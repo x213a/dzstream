@@ -11,7 +11,7 @@ import { Chips } from '@/components/Chips';
 import { useLocalized } from '@/i18n';
 import { useCatalog } from '@/providers/CatalogProvider';
 import { importSeedCatalog } from '@/services/catalog';
-import { colors, radius, spacing } from '@/theme';
+import { makeStyles, radius, spacing, useColors } from '@/theme';
 import type { Channel, MediaType } from '@/types';
 import { Alert } from '@/utils/alert';
 
@@ -21,6 +21,8 @@ export default function AdminHomeScreen() {
   const { text, isRTL } = useLocalized();
   const [type, setType] = useState<MediaType>('tv');
   const [importing, setImporting] = useState(false);
+  const colors = useColors();
+  const styles = useStyles();
 
   const list = allChannels.filter((c) => c.type === type);
 
@@ -99,7 +101,7 @@ export default function AdminHomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   header: { padding: spacing.lg, gap: spacing.md },
   actions: { flexDirection: 'row', gap: spacing.sm },
   filter: { flexDirection: 'row', gap: spacing.sm, marginTop: spacing.sm },
@@ -107,4 +109,4 @@ const styles = StyleSheet.create({
   logo: { width: 44, height: 44, borderRadius: radius.sm },
   dot: { width: 8, height: 8, borderRadius: 4 },
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: colors.border, marginStart: 76 },
-});
+}));

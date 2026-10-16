@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { FlatList, Pressable, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
@@ -11,7 +11,7 @@ import { EmptyState } from '@/components/EmptyState';
 import { ScreenBackground, ScreenHeader } from '@/components/Screen';
 import { useAuth } from '@/providers/AuthProvider';
 import { useCatalog } from '@/providers/CatalogProvider';
-import { colors, radius, spacing } from '@/theme';
+import { makeStyles, radius, spacing, useColors } from '@/theme';
 import type { Channel, MediaType } from '@/types';
 import { Alert } from '@/utils/alert';
 
@@ -22,6 +22,8 @@ export default function FavoritesScreen() {
   const { isGuest, profile, available, toggleFavorite } = useAuth();
   const { getChannel } = useCatalog();
   const [type, setType] = useState<MediaType>('tv');
+  const colors = useColors();
+  const styles = useStyles();
 
   const favorites = (profile?.favorites ?? []).map(getChannel).filter((c): c is Channel => !!c);
   const shown = favorites.filter((c) => c.type === type);
@@ -56,7 +58,7 @@ export default function FavoritesScreen() {
                   accessibilityState={{ selected }}
                   style={[styles.segmentItem, selected && styles.segmentSelected]}
                 >
-                  <AppText variant="heading" color={selected ? colors.text : colors.textSecondary}>
+                  <AppText variant="heading" color={selected ? colors.onAccent : colors.textSecondary}>
                     {value === 'tv' ? t('common.tv') : t('tabs.radios')}
                   </AppText>
                 </Pressable>
@@ -82,7 +84,7 @@ export default function FavoritesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   segment: { flexDirection: 'row', gap: spacing.md, marginHorizontal: spacing.lg, marginBottom: spacing.lg },
   segmentItem: {
     flex: 1,
@@ -97,4 +99,4 @@ const styles = StyleSheet.create({
   segmentSelected: { backgroundColor: colors.accent, borderColor: colors.accent, boxShadow: '0 0 16px rgba(31,203,92,0.45)' },
   grid: { paddingHorizontal: spacing.lg, paddingBottom: spacing.lg, gap: spacing.md },
   columns: { gap: spacing.md },
-});
+}));

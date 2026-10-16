@@ -2,10 +2,10 @@ import { Cairo_400Regular, Cairo_500Medium, Cairo_600SemiBold, Cairo_800ExtraBol
 import { DancingScript_700Bold } from '@expo-google-fonts/dancing-script';
 import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_800ExtraBold } from '@expo-google-fonts/inter';
 import { useFonts } from 'expo-font';
-import { Stack, ThemeProvider } from 'expo-router';
+import { Stack, ThemeProvider as NavigationThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -14,12 +14,13 @@ import { initI18n } from '@/i18n';
 import { AuthProvider } from '@/providers/AuthProvider';
 import { CatalogProvider } from '@/providers/CatalogProvider';
 import { PlayerProvider } from '@/providers/PlayerProvider';
-import { colors, navigationTheme } from '@/theme';
+import { DEFAULT_THEME, loadThemeMode, navigationTheme, palettes, ThemeProvider, useTheme, type ThemeMode } from '@/theme';
 
 SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
 export default function RootLayout() {
   const [i18nReady, setI18nReady] = useState(false);
+  const [themeMode, setThemeMode] = useState<ThemeMode | null>(null);
   const [fontsLoaded, fontError] = useFonts({
     Inter_400Regular,
     Inter_500Medium,
@@ -36,34 +37,47 @@ export default function RootLayout() {
     initI18n()
       .catch((e) => console.warn('[i18n]', e))
       .finally(() => setI18nReady(true));
+    loadThemeMode().then(setThemeMode);
   }, []);
 
-  const ready = i18nReady && (fontsLoaded || !!fontError);
+  const ready = i18nReady && !!themeMode && (fontsLoaded || !!fontError);
 
   useEffect(() => {
     if (ready) SplashScreen.hideAsync().catch(() => undefined);
   }, [ready]);
 
-  if (!ready) return <View style={{ flex: 1, backgroundColor: colors.background }} />;
+  if (!ready) return <View style={{ flex: 1, backgroundColor: palettes[themeMode ?? DEFAULT_THEME].background }} />;
 
   return (
+    <ThemeProvider initialMode={themeMode ?? DEFAULT_THEME}>
+      <ThemedRoot />
+    </ThemeProvider>
+  );
+}
+
+/** Racine dépendant du thème : navigation, barre d'état et fonds suivent le mode choisi. */
+function ThemedRoot() {
+  const { mode, colors } = useTheme();
+  const navTheme = useMemo(() => navigationTheme(mode), [mode]);
+  return (
     <SafeAreaProvider style={{ backgroundColor: colors.background }}>
-      <ThemeProvider value={navigationTheme}>
+      <NavigationThemeProvider value={navTheme}>
         <AuthProvider>
           <CatalogProvider>
             <PlayerProvider>
-              <StatusBar style="light" />
+              <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
               <RootStack />
             </PlayerProvider>
           </CatalogProvider>
         </AuthProvider>
-      </ThemeProvider>
+      </NavigationThemeProvider>
     </SafeAreaProvider>
   );
 }
 
 function RootStack() {
   const { t } = useTranslation();
+  const { colors } = useTheme();
   return (
     <Stack
       screenOptions={{

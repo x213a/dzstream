@@ -1,7 +1,7 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Switch, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, Switch, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
@@ -11,7 +11,7 @@ import { useLocalized } from '@/i18n';
 import { useCatalog } from '@/providers/CatalogProvider';
 import { deleteChannel, saveChannel } from '@/services/catalog';
 import { isFirebaseConfigured } from '@/services/firebase';
-import { colors, spacing } from '@/theme';
+import { makeStyles, spacing, useColors } from '@/theme';
 import type { Channel, MediaType } from '@/types';
 import { Alert } from '@/utils/alert';
 
@@ -66,6 +66,8 @@ export default function AdminChannelScreen() {
   const [errors, setErrors] = useState<Errors>({});
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
+  const colors = useColors();
+  const styles = useStyles();
 
   const set = <K extends keyof Channel>(key: K, value: Channel[K]) => setForm((f) => ({ ...f, [key]: value }));
   const setDescription = (lang: 'fr' | 'ar' | 'en', value: string) =>
@@ -245,10 +247,10 @@ export default function AdminChannelScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   flex: { flex: 1, backgroundColor: colors.background },
   content: { padding: spacing.lg, gap: spacing.lg, paddingBottom: spacing.xxl },
   field: { gap: spacing.sm },
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   switchRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
-});
+}));

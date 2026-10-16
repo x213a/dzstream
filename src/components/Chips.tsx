@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Pressable, ScrollView, StyleSheet } from 'react-native';
+import { Pressable, ScrollView } from 'react-native';
 
-import { colors, radius, spacing } from '@/theme';
+import { makeStyles, radius, spacing, useColors } from '@/theme';
 
 import { AppText } from './AppText';
 
@@ -20,9 +20,11 @@ interface ChipsProps<T extends string> {
 }
 
 export function Chips<T extends string>({ options, value, onChange, scroll = true }: ChipsProps<T>) {
+  const colors = useColors();
+  const styles = useStyles();
   const chips = options.map((o) => {
     const selected = o.value === value;
-    const fg = selected ? colors.text : colors.textSecondary;
+    const fg = selected ? colors.onAccent : colors.textSecondary;
     return (
       <Pressable
         key={o.value}
@@ -47,7 +49,7 @@ export function Chips<T extends string>({ options, value, onChange, scroll = tru
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   row: { gap: spacing.sm, paddingHorizontal: spacing.lg },
   chip: {
     flexDirection: 'row',
@@ -65,4 +67,4 @@ const styles = StyleSheet.create({
     borderColor: colors.accent,
     boxShadow: '0 0 14px rgba(31,203,92,0.45)',
   },
-});
+}));

@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
@@ -11,7 +11,7 @@ import { useLocalized } from '@/i18n';
 import { useCatalog } from '@/providers/CatalogProvider';
 import { deleteCategory, saveCategory } from '@/services/catalog';
 import { isFirebaseConfigured } from '@/services/firebase';
-import { colors, radius, spacing } from '@/theme';
+import { makeStyles, radius, spacing, useColors } from '@/theme';
 import type { Category } from '@/types';
 import { Alert } from '@/utils/alert';
 
@@ -26,6 +26,8 @@ export default function AdminCategoriesScreen() {
   const [editing, setEditing] = useState<{ value: Category; isNew: boolean } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const colors = useColors();
+  const styles = useStyles();
 
   const startNew = () => {
     setError(null);
@@ -140,7 +142,7 @@ export default function AdminCategoriesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   flex: { flex: 1, backgroundColor: colors.background },
   content: { padding: spacing.lg, gap: spacing.sm, paddingBottom: spacing.xxl },
   row: {
@@ -154,4 +156,4 @@ const styles = StyleSheet.create({
   editor: { gap: spacing.md, padding: spacing.lg, marginTop: spacing.md, borderRadius: radius.lg, backgroundColor: colors.surface },
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   actions: { flexDirection: 'row', gap: spacing.sm },
-});
+}));

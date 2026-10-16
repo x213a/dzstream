@@ -10,7 +10,7 @@ import { useChannelActions } from '@/hooks/useChannelActions';
 import { useLocalized } from '@/i18n';
 import { useCatalog } from '@/providers/CatalogProvider';
 import { usePlayer } from '@/providers/PlayerProvider';
-import { channelTint, colors, radius, spacing } from '@/theme';
+import { channelTint, makeStyles, radius, spacing, useTheme } from '@/theme';
 import type { Channel } from '@/types';
 
 import { ActionTile } from './ActionTile';
@@ -36,8 +36,10 @@ export function RadioPlayerView({ channel }: { channel: Channel }) {
   const { channels, getCategory } = useCatalog();
   const { play, current, status, togglePause } = usePlayer();
   const { favorite, favBusy, onFavorite, onShare } = useChannelActions(channel);
+  const { mode, colors } = useTheme();
+  const styles = useStyles();
 
-  const tint = channelTint(channel.id);
+  const tint = channelTint(channel.id, mode);
   const isCurrent = current?.id === channel.id;
   const playing = isCurrent && status === 'playing';
   const loading = isCurrent && status === 'loading';
@@ -152,7 +154,7 @@ export function RadioPlayerView({ channel }: { channel: Channel }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   screen: { flex: 1, backgroundColor: colors.background },
   topBar: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs, paddingHorizontal: spacing.sm },
   hero: { alignItems: 'center', gap: spacing.xs, paddingHorizontal: spacing.lg, marginTop: spacing.md },
@@ -192,4 +194,4 @@ const styles = StyleSheet.create({
   },
   actions: { flexDirection: 'row', gap: spacing.md, marginHorizontal: spacing.lg, marginBottom: spacing.xl },
   description: { marginHorizontal: spacing.lg, marginBottom: spacing.xl },
-});
+}));

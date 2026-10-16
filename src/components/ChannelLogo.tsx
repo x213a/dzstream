@@ -43,7 +43,7 @@ export function ChannelLogo({ channel, logoSize, style }: ChannelLogoProps) {
           accessibilityIgnoresInvertColors
         />
       ) : (
-        <AppText variant="title" style={{ fontSize: logoSize * 0.38, lineHeight: logoSize * 0.5 }}>
+        <AppText variant="title" color="#FFFFFF" style={{ fontSize: logoSize * 0.38, lineHeight: logoSize * 0.5 }}>
           {initials}
         </AppText>
       )}

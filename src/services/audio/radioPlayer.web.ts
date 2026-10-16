@@ -56,7 +56,7 @@ export async function playRadio(channel: Channel, subtitle: string) {
     navigator.mediaSession.metadata = new MediaMetadata({
       title: channel.name,
       artist: subtitle,
-      album: 'DzStream',
+      album: 'Mawave',
       artwork: channel.logoUrl ? [{ src: channel.logoUrl }] : [],
     });
   }

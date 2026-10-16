@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { ActivityIndicator, Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
-import { colors, radius, spacing } from '@/theme';
+import { makeStyles, radius, spacing, useColors, type Palette } from '@/theme';
 
 import { AppText } from './AppText';
 
@@ -17,15 +17,17 @@ interface ButtonProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const palette: Record<Variant, { bg: string; pressed: string; fg: string }> = {
-  primary: { bg: colors.accent, pressed: colors.accentPressed, fg: colors.text },
+const paletteOf = (colors: Palette): Record<Variant, { bg: string; pressed: string; fg: string }> => ({
+  primary: { bg: colors.accent, pressed: colors.accentPressed, fg: colors.onAccent },
   secondary: { bg: colors.surfaceRaised, pressed: colors.surfacePressed, fg: colors.text },
   ghost: { bg: 'transparent', pressed: colors.surface, fg: colors.text },
   danger: { bg: 'transparent', pressed: colors.surface, fg: colors.danger },
-};
+});
 
 export function Button({ label, onPress, variant = 'primary', icon, loading, disabled, style }: ButtonProps) {
-  const p = palette[variant];
+  const colors = useColors();
+  const styles = useStyles();
+  const p = paletteOf(colors)[variant];
   const inactive = disabled || loading;
   return (
     <Pressable
@@ -54,7 +56,7 @@ export function Button({ label, onPress, variant = 'primary', icon, loading, dis
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   base: {
     minHeight: 48,
     borderRadius: radius.pill,
@@ -64,4 +66,4 @@ const styles = StyleSheet.create({
   },
   content: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   dangerBorder: { borderWidth: StyleSheet.hairlineWidth, borderColor: colors.danger },
-});
+}));

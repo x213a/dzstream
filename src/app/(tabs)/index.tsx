@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { ActivityIndicator, ScrollView, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AlgeriaFlag } from '@/components/AlgeriaFlag';
@@ -17,7 +17,7 @@ import { useLocalized } from '@/i18n';
 import { useAuth } from '@/providers/AuthProvider';
 import { useCatalog } from '@/providers/CatalogProvider';
 import { isFirebaseConfigured } from '@/services/firebase';
-import { colors, fonts, radius, spacing } from '@/theme';
+import { fonts, makeStyles, radius, spacing, useColors } from '@/theme';
 import type { Channel, MediaType } from '@/types';
 import { matchesQuery } from '@/utils/search';
 
@@ -31,6 +31,8 @@ export default function HomeScreen() {
   const { profile } = useAuth();
   const [filter, setFilter] = useState<Filter>('all');
   const [query, setQuery] = useState('');
+  const colors = useColors();
+  const styles = useStyles();
 
   const data = useMemo(() => {
     const resolve = (ids: string[]) => ids.map(getChannel).filter((c): c is Channel => !!c);
@@ -149,7 +151,7 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   center: { alignItems: 'center', justifyContent: 'center' },
   header: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingHorizontal: spacing.lg, marginBottom: spacing.lg },
   flag: { borderWidth: 2, borderColor: 'rgba(255,255,255,0.85)', boxShadow: '0 0 18px rgba(31,203,92,0.35)' },
@@ -168,4 +170,4 @@ const styles = StyleSheet.create({
   },
   searchInput: { flex: 1, minHeight: 46, color: colors.text, fontSize: 15 },
   filters: { marginBottom: spacing.xl },
-});
+}));
